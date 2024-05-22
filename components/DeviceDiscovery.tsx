@@ -1,15 +1,29 @@
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import {
+  Pressable,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import React from "react";
 import ContentricCircles from "./ContentricCircles";
 import DevicesList from "./DevicesList";
+import { DeviceContext } from "../hooks/useDiscoveryContext";
 const DeviceDiscovery = () => {
+  const { discoverDevices } = React.useContext(DeviceContext);
+
   return (
     <View style={styles.container}>
       <View style={styles.container2}>
         <DevicesList />
         <ContentricCircles>
-          <TouchableOpacity style={styles.scanButton} onPress={() => {}}>
-            <Text style={styles.buttonText}>Scan</Text>
+          <TouchableOpacity
+            style={styles.scanButton}
+            onPress={() => {
+              discoverDevices();
+            }}
+          >
+            <Text style={styles.buttonText}>searching</Text>
           </TouchableOpacity>
         </ContentricCircles>
       </View>
@@ -54,7 +68,7 @@ const styles = StyleSheet.create({
     height: 90,
   },
   buttonText: {
-    fontSize: 26,
+    fontSize: 22,
     fontFamily: "ElMessiri-Bold",
     color: "#000",
   },

@@ -1,33 +1,61 @@
 import React from "react";
 import CircleContainer from "./CircleContainer";
-import { View } from "react-native";
 const ContentricCircles = ({ children, style = {} }) => {
   return (
-    <CircleContainer borderTopLeftRadius={400} borderTopRightRadius={400}>
-      <CircleContainer borderTopLeftRadius={360} borderTopRightRadius={360}>
-        <CircleContainer borderTopLeftRadius={360} borderTopRightRadius={360}>
-          <CircleContainer borderTopLeftRadius={300} borderTopRightRadius={300}>
+    <CircleContainer
+      borderTopLeftRadius={400}
+      borderTopRightRadius={400}
+      padding={20}
+      paddingBottom={0}
+      delay={36}
+    >
+      <CircleContainer
+        borderTopLeftRadius={400}
+        borderTopRightRadius={400}
+        delay={36}
+      >
+        <CircleContainer
+          borderTopLeftRadius={360}
+          borderTopRightRadius={360}
+          delay={32}
+        >
+          <CircleContainer
+            borderTopLeftRadius={360}
+            borderTopRightRadius={360}
+            delay={28}
+          >
             <CircleContainer
               borderTopLeftRadius={300}
               borderTopRightRadius={300}
+              delay={24}
             >
               <CircleContainer
                 borderTopLeftRadius={300}
                 borderTopRightRadius={300}
+                delay={20}
               >
                 <CircleContainer
                   borderTopLeftRadius={300}
                   borderTopRightRadius={300}
+                  delay={16}
                 >
                   <CircleContainer
-                    borderTopLeftRadius={260}
-                    borderTopRightRadius={260}
+                    borderTopLeftRadius={300}
+                    borderTopRightRadius={300}
+                    delay={12}
                   >
                     <CircleContainer
                       borderTopLeftRadius={260}
                       borderTopRightRadius={260}
+                      delay={8}
                     >
-                      <CircleContainer>{children}</CircleContainer>
+                      <CircleContainer
+                        borderTopLeftRadius={260}
+                        borderTopRightRadius={260}
+                        delay={4}
+                      >
+                        <CircleContainer>{children}</CircleContainer>
+                      </CircleContainer>
                     </CircleContainer>
                   </CircleContainer>
                 </CircleContainer>
