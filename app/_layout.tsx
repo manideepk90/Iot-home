@@ -39,7 +39,7 @@ export default function RootLayout() {
               }}
             />
             <Stack.Screen
-              name="connecting"
+              name="Connecting"
               options={{
                 headerShown: false,
               }}
