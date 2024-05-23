@@ -16,7 +16,7 @@ const index = () => {
     <>
       <View style={{ flex: 1, paddingTop: insets.top, position: "relative" }}>
         <WaterMark />
-        <View className="p-10">
+        <View style={{ padding: 35 }}>
           <MainTitle>Select Devices</MainTitle>
         </View>
         <DeviceDiscovery />

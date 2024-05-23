@@ -22,6 +22,7 @@ export const DeviceContext = createContext({
   connect: (device: any) => {},
   isConnected: false,
   discoverDeviceById: (id: string) => {},
+  changeState: (state: any) => {},
 } as any);
 
 const pingDevice = async (ip: string) => {
@@ -41,7 +42,12 @@ const DevicesProvider = ({ children }: { children: ReactNode }) => {
   const [scanning, setScanning] = useState(false);
   const [connecting, setConnecting] = useState(false);
   const [isConnected, setConnected] = useState(false);
-  const [selectedDevice, setSelectedDevice] = useState(null);
+  const [state, setState] = useState({
+    coolState: 0,
+    coolerState: 0,
+    swingState: 0,
+  });
+  const [selectedDevice, setSelectedDevice] = useState(null as any);
   const { devicesActions, selectedDeviceActions } = useContext(
     DatabaseContext
   ) as any;
@@ -57,7 +63,7 @@ const DevicesProvider = ({ children }: { children: ReactNode }) => {
     setScanning(true);
     const localIp = await Network.getIpAddressAsync();
     const ipPrefix = localIp.substring(0, localIp.lastIndexOf(".") + 1);
-    
+
     const devicePromises = [];
     for (let i = 0; i <= 255; i++) {
       const ip = `${ipPrefix}${i}`;
@@ -75,7 +81,7 @@ const DevicesProvider = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     discoverIp();
     discoverDevices();
-    if (scanning || connecting) return; 
+    if (scanning || connecting) return;
     const interval = setInterval(discoverDevices, 7000);
     return () => clearInterval(interval);
   }, [discoverDevices, selectedDevice, scanning, connecting]);
@@ -118,23 +124,16 @@ const DevicesProvider = ({ children }: { children: ReactNode }) => {
 
   const connect = useCallback(
     async (device: any) => {
-      if (!device.ip || connecting) {
-        console.log("No IP address or already connecting");
+      if (!device.ip) {
         return false;
       }
       setConnecting(true);
       try {
         const response = await pingDevice(device.ip);
         if (response) {
-          const result = await selectedDeviceActions.setSelectedDevice(
-            response
-          );
-          if (result.status && !result.dbError) {
-            setConnected(true);
-            return true;
-          }
+          setConnected(true);
+          return true;
         }
-        console.log("Failed to connect device, so checking for ip change");
         discoverDeviceById(device.id);
         setConnected(false);
         setError("Failed to connect device");
@@ -180,19 +179,62 @@ const DevicesProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  useEffect(() => {
-    if (selectedDevice || !connecting) {
-      const interval = setInterval(() => {
-        connect(selectedDevice);
-      }, 6000);
-      return () => clearInterval(interval);
+  // useEffect(() => {
+  //   if (selectedDevice || !connecting) {
+  //     const interval = setInterval(() => {
+  //       connect(selectedDevice);
+  //     }, 6000);
+  //     return () => clearInterval(interval);
+  //   }
+  // }, [selectedDevice, connect, connecting]);
+  function debounce(func: any, wait: number) {
+    let timeout: any;
+    return function (...args: any) {
+      const later = () => {
+        clearTimeout(timeout);
+        func(...args);
+      };
+      clearTimeout(timeout);
+      timeout = setTimeout(later, wait);
+    };
+  }
+
+  const changeState = async (newState: any) => {
+    setState((prevState: any) => ({ ...prevState, ...newState }));
+
+    try {
+      console.log("changing state: ", newState);
+      const response = await axios.post(
+        `http://${selectedDevice.ip}/setCoolerState`,
+        newState,
+        {
+          timeout: 2500,
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      if (response.status === 200) {
+        setConnected(true);
+        setState(response.data);
+      } else {
+        // Handle error response
+        setConnected(false);
+      }
+    } catch (error) {
+      console.error("Error changing state: ", error);
+      setConnected(false);
     }
-  }, [selectedDevice, connect, connecting]);
+  };
+  const debouncedChangeState = useCallback(debounce(changeState, 300), [
+    selectedDevice,
+  ]);
 
   return (
     <DeviceContext.Provider
       value={{
         devices,
+        ip,
         scanning,
         discoverDevices,
         connectDevice,
@@ -201,6 +243,8 @@ const DevicesProvider = ({ children }: { children: ReactNode }) => {
         getSelectedDevice,
         connect,
         isConnected,
+        state,
+        changeState: debouncedChangeState,
       }}
     >
       {children}

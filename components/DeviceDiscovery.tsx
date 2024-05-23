@@ -10,12 +10,13 @@ import ContentricCircles from "./ContentricCircles";
 import DevicesList from "./DevicesList";
 import { DeviceContext } from "../hooks/useDiscoveryContext";
 const DeviceDiscovery = () => {
-  const { discoverDevices } = React.useContext(DeviceContext);
+  const { discoverDevices, ip } = React.useContext(DeviceContext);
 
   return (
     <View style={styles.container}>
       <View style={styles.container2}>
         <DevicesList />
+        <Text>{ip}</Text>
         <ContentricCircles>
           <TouchableOpacity
             style={styles.scanButton}
@@ -37,7 +38,6 @@ const styles = StyleSheet.create({
   container: {
     width: "100%",
     height: "100%",
-    flex: 1,
     color: "#000",
     position: "absolute",
     bottom: 0,
@@ -46,7 +46,8 @@ const styles = StyleSheet.create({
   },
   container2: {
     position: "relative",
-    height: "70%",
+    height: "80%",
+    width: "100%",
     alignItems: "center",
     justifyContent: "flex-end",
   },

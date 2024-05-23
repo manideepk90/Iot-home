@@ -1,41 +1,43 @@
-import { act } from "react-test-renderer";
-import { CoolIcon, PowerIcon, SwingIcon } from "./icons";
+import { CoolIcon, SwingIcon } from "./icons";
 
 export const pushButtonsData = [
-//   {
-//     label: "power",
-//     value: 0,
-//     icon: { 0: PowerIcon },
-//     actionCallback: (value: number) => {
-//       return {
-//         coolerState: value,
-//       };
-//     },
-//   },
+  //   {
+  //     label: "power",
+  //     value: 0,
+  //     icon: { 0: PowerIcon },
+  //     actionCallback: (value: number) => {
+  //       return {
+  //         coolerState: value,
+  //       };
+  //     },
+  //   },
   {
     label: "speed",
-    value: 1,
+    key: "coolerState",
     icon: { 0: "" },
+    values: [0, 1, 3],
     actionCallback: (value: number) => {
       return {
-        coolerState: value,
+        coolerState: value === 0 ? 1 : value === 1 ? 3 : 0,
       };
     },
   },
   {
     label: "cool",
-    value: 0,
+    key: "coolState",
     icon: { 0: CoolIcon },
+    values: [0, 1],
     actionCallback: (value: number) => {
-      return { coolState: value };
+      return { coolState: value === 0 ? 1 : 0 };
     },
   },
   {
     label: "swing",
-    value: 0,
+    key: "swingState",
     icon: { 0: SwingIcon },
+    values: [0, 1],
     actionCallback: (value: number) => {
-      return { swingState: value };
+      return { swingState: value === 0 ? 1 : 0 };
     },
   },
 ];
