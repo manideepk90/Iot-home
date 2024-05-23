@@ -57,7 +57,7 @@ const DevicesProvider = ({ children }: { children: ReactNode }) => {
     setScanning(true);
     const localIp = await Network.getIpAddressAsync();
     const ipPrefix = localIp.substring(0, localIp.lastIndexOf(".") + 1);
-
+    
     const devicePromises = [];
     for (let i = 0; i <= 255; i++) {
       const ip = `${ipPrefix}${i}`;
@@ -75,10 +75,10 @@ const DevicesProvider = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     discoverIp();
     discoverDevices();
-
-    const interval = setInterval(discoverDevices, 6000);
+    if (scanning || connecting) return; 
+    const interval = setInterval(discoverDevices, 7000);
     return () => clearInterval(interval);
-  }, [discoverDevices, selectedDevice]);
+  }, [discoverDevices, selectedDevice, scanning, connecting]);
 
   const getSelectedDevice = useCallback(
     async (link = false) => {
@@ -104,14 +104,17 @@ const DevicesProvider = ({ children }: { children: ReactNode }) => {
     fetchDevice();
   }, [getSelectedDevice]);
 
-  const discoverDeviceById = async (id: string) => {
-    const device = devices.find((device) => device.id === id);
-    console.log("looking for device: ", device);
-    if (device) {
-      setSelectedDevice(device);
-      await connect(device);
-    }
-  };
+  const discoverDeviceById = useCallback(
+    async (id: string) => {
+      const device = devices.find((device) => device.id === id);
+      console.log("looking for device: ", device);
+      if (device) {
+        setSelectedDevice(device);
+        await connect(device);
+      }
+    },
+    [devices]
+  );
 
   const connect = useCallback(
     async (device: any) => {
@@ -131,6 +134,7 @@ const DevicesProvider = ({ children }: { children: ReactNode }) => {
             return true;
           }
         }
+        console.log("Failed to connect device, so checking for ip change");
         discoverDeviceById(device.id);
         setConnected(false);
         setError("Failed to connect device");

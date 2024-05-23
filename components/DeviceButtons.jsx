@@ -1,17 +1,13 @@
 import { StyleSheet, Text, View } from "react-native";
 import React from "react";
 import PushButton from "./Buttons/PushButton";
+import { pushButtonsData } from "@/constants/ButtonsData";
 const DeviceButtons = () => {
   return (
     <View style={styles.container}>
-      <PushButton />
-      <PushButton />
-      <PushButton />
-      <PushButton />
-      <PushButton />
-      <PushButton />
-      <PushButton />
-      <PushButton />
+      {pushButtonsData.map((button) => (
+        <PushButton {...button} key={button.label} />
+      ))}
     </View>
   );
 };

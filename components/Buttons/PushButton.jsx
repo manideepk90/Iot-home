@@ -6,8 +6,9 @@ import { Image } from "expo-image";
 
 const PushButton = ({
   onAction,
-  buttonText = "button text",
+  label = "button text",
   icon = CoolerIcon,
+  value = 0,
 }) => {
   return (
     <TouchableOpacity
@@ -17,9 +18,9 @@ const PushButton = ({
     >
       <View style={styles.container}>
         <View style={styles.imageContainer}>
-          <Image style={styles.image} source={icon} />
+          <Image style={styles.image} source={icon[value]} />
         </View>
-        <Text style={styles.buttonText}>{buttonText}</Text>
+        <Text style={styles.buttonText}>{label}</Text>
       </View>
     </TouchableOpacity>
   );
@@ -41,7 +42,7 @@ const styles = StyleSheet.create({
     borderRadius: 30,
     backgroundColor: Colors.light.primary,
     borderColor: Colors.light.background,
-    padding: 5,
+    padding: 10,
   },
   image: {
     width: "100%",
