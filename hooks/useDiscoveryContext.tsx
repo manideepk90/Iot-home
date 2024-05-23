@@ -1,4 +1,3 @@
-import { StyleSheet } from "react-native";
 import React, {
   ReactNode,
   createContext,
@@ -33,7 +32,6 @@ const pingDevice = async (ip: string) => {
     }
   } catch (error) {
     return false;
-    // console.error(`Error pinging device at ${ip}: `, error);
   }
   return null;
 };
@@ -67,8 +65,9 @@ const DevicesProvider = ({ children }: { children: ReactNode }) => {
     }
 
     const deviceResults = await Promise.all(devicePromises);
-    const discoveredDevices = deviceResults.filter((device) => device !== null);
-
+    const discoveredDevices = deviceResults.filter(
+      (device) => device !== null && device
+    );
     setDevices(discoveredDevices);
     setScanning(false);
   }, []);
@@ -84,10 +83,12 @@ const DevicesProvider = ({ children }: { children: ReactNode }) => {
   const getSelectedDevice = useCallback(
     async (link = false) => {
       const device = await selectedDeviceActions.getSelectedDevice();
-      if (link && device.status) {
-        router.replace("/home");
+      if (device.status && device.data) {
+        if (link) {
+          router.replace("/home");
+        }
+        return device.data;
       }
-      return device.data;
     },
     [selectedDeviceActions]
   );
@@ -126,7 +127,6 @@ const DevicesProvider = ({ children }: { children: ReactNode }) => {
             response
           );
           if (result.status && !result.dbError) {
-            console.log("Connecting to device: ", device, connecting);
             setConnected(true);
             return true;
           }
@@ -160,8 +160,9 @@ const DevicesProvider = ({ children }: { children: ReactNode }) => {
           result2.status &&
           !result2.dbError
         ) {
-          router.replace("/home");
           setConnecting(false);
+          setConnected(true);
+          router.replace("/home");
           return;
         }
       }
@@ -204,5 +205,3 @@ const DevicesProvider = ({ children }: { children: ReactNode }) => {
 };
 
 export default DevicesProvider;
-
-const styles = StyleSheet.create({});

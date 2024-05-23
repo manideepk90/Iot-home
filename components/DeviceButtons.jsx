@@ -8,6 +8,10 @@ const DeviceButtons = () => {
       <PushButton />
       <PushButton />
       <PushButton />
+      <PushButton />
+      <PushButton />
+      <PushButton />
+      <PushButton />
     </View>
   );
 };

@@ -3,11 +3,14 @@ import React, { useContext } from "react";
 import { Image } from "expo-image";
 import { CoolerIcon } from "@/constants/icons";
 import { DeviceContext } from "@/hooks/useDiscoveryContext";
+import { router } from "expo-router";
 const DeviceDetails = () => {
   const { isConnected, selectedDevice: device } = useContext(DeviceContext);
 
   return (
-    <TouchableOpacity onPress={() => {}} style={styles.container}>
+    <TouchableOpacity onPress={() => {
+      router.push("/deviceDetails");
+    }} style={styles.container}>
       <Image style={styles.image} source={CoolerIcon} />
       <Text style={styles.name}>{device?.name ?? "Loading..."}</Text>
       <Text style={styles.idText}>{device?.id ?? "Loading..."}</Text>

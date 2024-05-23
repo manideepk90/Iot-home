@@ -39,13 +39,19 @@ export default function RootLayout() {
               }}
             />
             <Stack.Screen
-              name="Connecting"
+              name="connecting"
               options={{
                 headerShown: false,
               }}
             />
             <Stack.Screen
               name="(home)/home"
+              options={{
+                headerShown: false,
+              }}
+            />
+            <Stack.Screen
+              name="(home)/deviceDetails"
               options={{
                 headerShown: false,
               }}
