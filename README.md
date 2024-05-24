@@ -26,8 +26,8 @@ This React Native application allows users to remotely control and monitor a sma
 1. Clone the Repository:
 
    ```bash
-   git clone [https://github.com/manideepk90/Iot-home](https://github.com/manideepk90/Iot-home.git)
-   cd smart-cooler-control-app
+   git clone https://github.com/manideepk90/Iot-home.git
+   cd Iot-home
    ```
 
 2. Install Dependencies:
