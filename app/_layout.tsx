@@ -4,21 +4,12 @@ import { useEffect } from "react";
 import { Stack } from "expo-router";
 import "react-native-reanimated";
 import { SafeAreaProvider } from "react-native-safe-area-context";
-
+import DatabaseProvider from "../hooks/useDatabase";
+import DevicesProvider from "../hooks/useDiscoveryContext";
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
   const [loaded, error] = useFonts({
-    // "DMSans-Black": require("../assets/fonts/DMSans-Black.ttf"),
-    // "DMSans-Bold": require("../assets/fonts/DMSans-Bold.ttf"),
-    // "DMSans-Italic": require("../assets/fonts/DMSans-Italic.ttf"),
-    // "DMSans-Regular": require("../assets/fonts/DMSans-Regular.ttf"),
-    // "DMSans-Medium": require("../assets/fonts/DMSans-Medium.ttf"),
-    // "DMSans-Light": require("../assets/fonts/DMSans-Light.ttf"),
-    // "DMSans-ExtraBold": require("../assets/fonts/DMSans-ExtraBold.ttf"),
-    // "DMSans-ExtraLight": require("../assets/fonts/DMSans-ExtraLight.ttf"),
-    // "DMSans-Thin": require("../assets/fonts/DMSans-Thin.ttf"),
-    // "DMSans-SemiBold": require("../assets/fonts/DMSans-SemiBold.ttf"),
     "ElMessiri-Bold": require("../assets/fonts/ElMessiri-Bold.ttf"),
     "ElMessiri-SemiBold": require("../assets/fonts/ElMessiri-SemiBold.ttf"),
     "ElMessiri-Regular": require("../assets/fonts/ElMessiri-Regular.ttf"),
@@ -38,14 +29,36 @@ export default function RootLayout() {
 
   return (
     <SafeAreaProvider>
-      <Stack>
-        <Stack.Screen
-          name="index"
-          options={{
-            headerShown: false,
-          }}
-        />
-      </Stack>
+      <DatabaseProvider>
+        <DevicesProvider>
+          <Stack>
+            <Stack.Screen
+              name="index"
+              options={{
+                headerShown: false,
+              }}
+            />
+            <Stack.Screen
+              name="connecting"
+              options={{
+                headerShown: false,
+              }}
+            />
+            <Stack.Screen
+              name="(home)/home"
+              options={{
+                headerShown: false,
+              }}
+            />
+            <Stack.Screen
+              name="(home)/deviceDetails"
+              options={{
+                headerShown: false,
+              }}
+            />
+          </Stack>
+        </DevicesProvider>
+      </DatabaseProvider>
     </SafeAreaProvider>
   );
 }

@@ -1,18 +1,24 @@
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import React from "react";
+import { Pressable, StyleSheet, Text, View } from "react-native";
+import React, { useContext } from "react";
 import { Image } from "expo-image";
 import { CoolerIcon, ConnectionWifiIcon } from "@/constants/icons";
-
+import { DeviceContext } from "@/hooks/useDiscoveryContext";
 const DeviceListItem = ({ item }) => {
+  const { connectDevice } = useContext(DeviceContext);
   return (
     <View style={styles.container}>
-      <TouchableOpacity onPress={() => {}} style={styles.buttonContainer}>
+      <Pressable
+        style={styles.buttonContainer}
+        onPress={() => {
+          connectDevice(item);
+        }}
+      >
         <View style={styles.iconContainer}>
           <Image source={CoolerIcon} style={styles.iconImage} />
         </View>
         <Image source={ConnectionWifiIcon} style={styles.connectionIcon} />
-        <Text>{`${item?.name}`.slice(0, 12)}...</Text>
-      </TouchableOpacity>
+      </Pressable>
+      <Text>{`${item?.name}`.slice(0, 12)}...</Text>
     </View>
   );
 };
@@ -38,7 +44,7 @@ const styles = StyleSheet.create({
     height: 24,
     position: "absolute",
     right: -6,
-    bottom: 10,
+    bottom: 0,
     borderRadius: 12,
   },
 

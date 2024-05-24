@@ -1,22 +1,24 @@
-import { StyleSheet, Text, View } from "react-native";
-import React from "react";
+import { StyleSheet, View } from "react-native";
+import React, { memo } from "react";
+import { Colors } from "@/constants/Colors";
 
-export default CircleContainer = ({ children, ...rest }) => {
-  const styles = StyleSheet.create({
-    container: {
-      marginBottom: 0,
-      padding: 15,
-      paddingBottom: 0,
-      justifyContent: "flex-end",
-      borderTopLeftRadius: 150,
-      borderTopRightRadius: 150,
-      borderColor: "#26D4B5",
-      alignItems: "center",
-      borderWidth: 1,
-      borderBottomWidth: 0,
-      ...rest,
-    },
-  });
-
-  return <View style={styles.container}>{children}</View>;
+const CircleContainer = ({ children, delay = 0, ...rest }) => {
+  return <View style={[styles.container, rest]}>{children}</View>;
 };
+
+const styles = StyleSheet.create({
+  container: {
+    marginBottom: 0,
+    padding: 15,
+    paddingBottom: 0,
+    justifyContent: "flex-end",
+    borderTopLeftRadius: 150,
+    borderTopRightRadius: 150,
+    borderColor: Colors.light.primary,
+    alignItems: "center",
+    borderWidth: 1,
+    borderBottomWidth: 0,
+  },
+});
+
+export default memo(CircleContainer);
