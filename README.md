@@ -1,50 +1,54 @@
-# Welcome to your Expo app 👋
+# Smart Cooler Control App
+## Overview
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+This React Native application allows users to remotely control and monitor a smart cooler over a local Wi-Fi network. The app interfaces with a NodeMCU microcontroller, which manages the cooler's operations using relay modules and sensors. This project showcases IoT integration with mobile applications, providing a seamless and user-friendly experience.
 
-## Get started
+## Features
+   * Remote Control: Turn the cooler on/off and adjust settings from your mobile device.
+   * State Persistence: Automatically reconnects to the cooler and retains settings even after power cycles.
+   * Device Discovery: Uses mDNS to automatically discover smart coolers on the local network.
+   * Local Storage: Saves device details for easy reconnection without repeated selection.
+   * REST API Integration: Communicates with the cooler using a RESTful API for reliable state management.
 
-1. Install dependencies
+## Technologies Used
+   * React Native: For cross-platform mobile app development.
+   * JavaScript/TypeScript: Core programming languages for the app.
+   * AsyncStorage: To persist device information locally on the mobile device.
+
+## Future Enhancements
+   + OTA Updates: Facilitate over-the-air updates for the cooler's firmware.
+   + Security: Implement HTTPS and token-based authentication for secure communication.
+   + Push Notifications: Notify users of status changes and updates.
+   + Advanced Device Management: Add features for monitoring device health and performance.
+
+## Installation
+
+1. Clone the Repository:
 
    ```bash
-   npm install
+   git clone [https://github.com/manideepk90/Iot-home](https://github.com/manideepk90/Iot-home.git)
+   cd smart-cooler-control-app
    ```
 
-2. Start the app
+2. Install Dependencies:
 
    ```bash
-    npx expo start
+    npm install
+   ```
+3. For Android
+   ```bash
+   npx expo start
    ```
 
-In the output, you'll find options to open the app in a
+## Usage
++ Ensure your smart cooler is connected to the same Wi-Fi network as your mobile device.
++ Open the app and use the device discovery feature to find and connect to your cooler.
++ Use the controls in the app to manage the cooler's operation.
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+## License
+This project is licensed under the MIT License.
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+## Contact
+For any questions or feedback, please contact manideepk90@example.com.
 
-## Get a fresh project
 
-When you're ready, run:
-
-```bash
-npm run reset-project
-```
-
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
-
-## Learn more
-
-To learn more about developing your project with Expo, look at the following resources:
-
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
-
-## Join the community
-
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
