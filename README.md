@@ -1,4 +1,4 @@
-# Smart Cooler Control App
+# Smart Cooler Control App V 1.0
 ## Overview
 
 This React Native application allows users to remotely control and monitor a smart cooler over a local Wi-Fi network. The app interfaces with a NodeMCU microcontroller, which manages the cooler's operations using relay modules and sensors. This project showcases IoT integration with mobile applications, providing a seamless and user-friendly experience.
@@ -20,6 +20,9 @@ This React Native application allows users to remotely control and monitor a sma
    + Security: Implement HTTPS and token-based authentication for secure communication.
    + Push Notifications: Notify users of status changes and updates.
    + Advanced Device Management: Add features for monitoring device health and performance.
+
+## Sample Figma Design 
+  [figma design link](https://www.figma.com/proto/XipQyLPY4CMWgBFP8fRIGK/Smart-Home-V-1.0?node-id=5-47&starting-point-node-id=1%3A2)
 
 ## Installation
 
