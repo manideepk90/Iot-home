@@ -52,6 +52,6 @@ This React Native application allows users to remotely control and monitor a sma
 This project is licensed under the MIT License.
 
 ## Contact
-For any questions or feedback, please contact manideepk90@example.com.
+For any questions or feedback, please contact manideepk90@gmail.com.
 
 
