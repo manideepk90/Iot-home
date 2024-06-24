@@ -54,3 +54,5 @@ yarn-error.*
 
 expo-env.d.ts
 # @end expo-cli
+android/gradle.properties
+android/gradle.properties

@@ -10,13 +10,14 @@ import ContentricCircles from "./ContentricCircles";
 import DevicesList from "./DevicesList";
 import { DeviceContext } from "../hooks/useDiscoveryContext";
 const DeviceDiscovery = () => {
-  const { discoverDevices, ip } = React.useContext(DeviceContext);
+  const { discoverDevices, ip, error } = React.useContext(DeviceContext);
 
   return (
     <View style={styles.container}>
       <View style={styles.container2}>
         <DevicesList />
         <Text>{ip}</Text>
+        <Text>{error}</Text>
         <ContentricCircles>
           <TouchableOpacity
             style={styles.scanButton}

@@ -6,11 +6,10 @@ import React, {
   useState,
   useCallback,
 } from "react";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import * as Network from "expo-network";
 import { DatabaseContext } from "./useDatabase";
 import { router } from "expo-router";
-import {hello} from "@/modules/wifi-module";
 
 export const DeviceContext = createContext({
   devices: [],
@@ -28,11 +27,11 @@ export const DeviceContext = createContext({
 
 const pingDevice = async (ip: string) => {
   try {
-    const response = await axios.get(`http://${ip}/details`, { timeout: 1000 });
+    const response = await axios.get(`http://${ip}/details`, { timeout: 1500 });
     if (response.status === 200) {
       return response.data;
     }
-  } catch (error) {
+  } catch (error : AxiosError | any) {
     return false;
   }
   return null;
@@ -56,37 +55,77 @@ const DevicesProvider = ({ children }: { children: ReactNode }) => {
   const [ip, setIp] = useState("");
 
   const discoverIp = async () => {
-    //  const localIp = await Network.getIpAddressAsync();
-
-      console.log("local ip: ", hello());
+    const localIp = await Network.getIpAddressAsync();
+    setIp(localIp);
   };
 
   const discoverDevices = useCallback(async () => {
     setScanning(true);
-    const localIp = await Network.getIpAddressAsync();
-    const ipPrefix = localIp.substring(0, localIp.lastIndexOf(".") + 1);
+    setError("");
 
+    const ipPrefix = ip.substring(0, ip.lastIndexOf(".") + 1);
     const devicePromises = [];
+    const maxConcurrentPings = 5;
+
     for (let i = 0; i <= 255; i++) {
       const ip = `${ipPrefix}${i}`;
       devicePromises.push(pingDevice(ip));
+
+      if (devicePromises.length === maxConcurrentPings) {
+        await Promise.all(devicePromises);
+        devicePromises.length = 0; 
+      }
     }
 
-    const deviceResults = await Promise.all(devicePromises);
+    // Handle the remaining promises
+    const remainingResults = await Promise.all(devicePromises);
+    const deviceResults = [...remainingResults];
+
     const discoveredDevices = deviceResults.filter(
       (device) => device !== null && device
     );
+    console.log("Discovered devices:", discoveredDevices);
+
+    if (discoveredDevices.length === 0) {
+      setError("No devices found");
+    }
+
     setDevices(discoveredDevices);
     setScanning(false);
-  }, []);
+  }, [ip]);
+
+  // const discoverDevices = useCallback(async () => {
+  //   setScanning(true);
+
+  //   const ipPrefix = ip.substring(0, ip.lastIndexOf(".") + 1);
+  //   const devicePromises = [];
+  //   for (let i = 0; i <= 255; i++) {
+  //     const ip = `${ipPrefix}${i}`;
+  //     devicePromises.push(pingDevice(ip));
+  //   }
+
+  //   const deviceResults = await Promise.all(devicePromises);
+  //   const discoveredDevices = deviceResults.filter(
+  //     (device) => device !== null && device
+  //   );
+  //   console.log("Discovered devices: ", discoveredDevices);
+  //   if(discoveredDevices.length === 0) {
+  //     setError("No devices found");
+  //   }
+  //   setDevices(discoveredDevices);
+  //   setScanning(false);
+  // }, [ip]);
 
   useEffect(() => {
-    discoverIp();
-    discoverDevices();
+    if (ip === "" || ip === null || ip === "0.0.0.0") {
+      discoverIp();
+    }
+    console.log(scanning, connecting, ip);
     if (scanning || connecting) return;
+
     const interval = setInterval(discoverDevices, 7000);
     return () => clearInterval(interval);
-  }, [discoverDevices, selectedDevice, scanning, connecting]);
+  }, [discoverDevices, selectedDevice, scanning, connecting, ip]);
 
   const getSelectedDevice = useCallback(
     async (link = false) => {
@@ -237,6 +276,7 @@ const DevicesProvider = ({ children }: { children: ReactNode }) => {
       value={{
         devices,
         ip,
+        error,
         scanning,
         discoverDevices,
         connectDevice,
