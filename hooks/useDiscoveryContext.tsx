@@ -10,6 +10,7 @@ import axios from "axios";
 import * as Network from "expo-network";
 import { DatabaseContext } from "./useDatabase";
 import { router } from "expo-router";
+import {hello} from "@/modules/wifi-module";
 
 export const DeviceContext = createContext({
   devices: [],
@@ -55,8 +56,9 @@ const DevicesProvider = ({ children }: { children: ReactNode }) => {
   const [ip, setIp] = useState("");
 
   const discoverIp = async () => {
-    const localIp = await Network.getIpAddressAsync();
-    setIp(localIp);
+    //  const localIp = await Network.getIpAddressAsync();
+
+      console.log("local ip: ", hello());
   };
 
   const discoverDevices = useCallback(async () => {
