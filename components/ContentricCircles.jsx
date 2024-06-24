@@ -3,7 +3,7 @@ import CircleContainer from "./CircleContainer";
 import { Animated, Dimensions, StyleSheet, View } from "react-native";
 import { Colors } from "@/constants/Colors";
 const ContentricCircles = ({ children, style = {} }) => {
-  const animatedValue = useRef(new Animated.Value(0)).current;
+  const animatedValue = useRef(new Animated.Value(0.2)).current;
 
   useEffect(() => {
     const animation = Animated.loop(
@@ -17,8 +17,8 @@ const ContentricCircles = ({ children, style = {} }) => {
     animation.start();
   }, [animatedValue]);
   const scaling = animatedValue.interpolate({
-    inputRange: [0, 1],
-    outputRange: [0, 1], // Adjust the scaling values as needed
+    inputRange: [0.2, 1],
+    outputRange: [0.2, 1], // Adjust the scaling values as needed
   });
   const styles = StyleSheet.create({
     container: {
