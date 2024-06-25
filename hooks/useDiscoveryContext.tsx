@@ -27,11 +27,14 @@ export const DeviceContext = createContext({
 
 const pingDevice = async (ip: string) => {
   try {
-    const response = await axios.get(`http://${ip}/details`, { timeout: 1500 });
+    const response = await axios.get(`http://${ip}:80/details`, {
+      timeout: 1500,
+      method: "GET",
+    });
     if (response.status === 200) {
       return response.data;
     }
-  } catch (error : AxiosError | any) {
+  } catch (error: AxiosError | any) {
     return false;
   }
   return null;
@@ -56,6 +59,7 @@ const DevicesProvider = ({ children }: { children: ReactNode }) => {
 
   const discoverIp = async () => {
     const localIp = await Network.getIpAddressAsync();
+
     setIp(localIp);
   };
 
@@ -73,7 +77,7 @@ const DevicesProvider = ({ children }: { children: ReactNode }) => {
 
       if (devicePromises.length === maxConcurrentPings) {
         await Promise.all(devicePromises);
-        devicePromises.length = 0; 
+        devicePromises.length = 0;
       }
     }
 
@@ -90,9 +94,9 @@ const DevicesProvider = ({ children }: { children: ReactNode }) => {
       setError("No devices found");
     }
 
-    setDevices(discoveredDevices);
+    setDevices(() => discoveredDevices);
     setScanning(false);
-  }, [ip]);
+  }, [ip, scanning]);
 
   // const discoverDevices = useCallback(async () => {
   //   setScanning(true);
@@ -115,17 +119,21 @@ const DevicesProvider = ({ children }: { children: ReactNode }) => {
   //   setDevices(discoveredDevices);
   //   setScanning(false);
   // }, [ip]);
-
+  useEffect(() => {
+    if (ip !== "" || ip !== null || ip !== "0.0.0.0") {
+      discoverDevices();
+    }
+  }, [ip]);
   useEffect(() => {
     if (ip === "" || ip === null || ip === "0.0.0.0") {
       discoverIp();
     }
-    console.log(scanning, connecting, ip);
-    if (scanning || connecting) return;
-
-    const interval = setInterval(discoverDevices, 7000);
-    return () => clearInterval(interval);
-  }, [discoverDevices, selectedDevice, scanning, connecting, ip]);
+    console.log(pingDevice("192.168.1.239"))
+    // if (devices.length === 0) discoverDevices();
+    // if (scanning || connecting) return;
+    // const interval = setInterval(discoverDevices, 7000);
+    // return () => clearInterval(interval);
+  }, [discoverDevices, selectedDevice, scanning, connecting, ip, devices]);
 
   const getSelectedDevice = useCallback(
     async (link = false) => {
