@@ -16,7 +16,6 @@ const DeviceDetails = () => {
     >
       <Image style={styles.image} source={CoolerIcon} />
       <Text style={styles.name}>{device?.name ?? "Loading..."}</Text>
-      <Text style={styles.idText}>{device?.id ?? "Loading..."}</Text>
       <Text style={styles.connectionStatusText}>
         {isConnected ? "Connected" : "Disconnected"}
       </Text>

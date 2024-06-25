@@ -2,22 +2,6 @@ import { StyleSheet, Text, View } from "react-native";
 import React from "react";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { Colors } from "@/constants/Colors";
-
-const ConnectingScreen = () => {
-  return (
-    <SafeAreaProvider>
-      <View style={styles.container}>
-        <Text style={[styles.connectionText, { fontSize: 26 }]}>
-          Please wait
-        </Text>
-        <Text style={styles.connectionText}>Connecting...</Text>
-      </View>
-    </SafeAreaProvider>
-  );
-};
-
-export default ConnectingScreen;
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -36,3 +20,19 @@ const styles = StyleSheet.create({
     fontSize: 18,
   },
 });
+const ConnectingScreen = () => {
+  return (
+    <SafeAreaProvider>
+      <View style={styles.container}>
+        <Text style={[styles.connectionText, { fontSize: 26 }]}>
+          Please wait
+        </Text>
+        <Text style={styles.connectionText}>Connecting...</Text>
+      </View>
+    </SafeAreaProvider>
+  );
+};
+
+export default ConnectingScreen;
+
+

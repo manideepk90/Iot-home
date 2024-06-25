@@ -6,7 +6,7 @@ import React, {
   useState,
   useCallback,
 } from "react";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import * as Network from "expo-network";
 import { DatabaseContext } from "./useDatabase";
 import { router } from "expo-router";
@@ -23,15 +23,19 @@ export const DeviceContext = createContext({
   isConnected: false,
   discoverDeviceById: (id: string) => {},
   changeState: (state: any) => {},
+  removeDevice: (device: any) => {},
 } as any);
 
 const pingDevice = async (ip: string) => {
   try {
-    const response = await axios.get(`http://${ip}/details`, { timeout: 1000 });
+    const response = await axios.get(`http://${ip}:4000/details`, {
+      timeout: 1000,
+    });
+    console.log(response);
     if (response.status === 200) {
       return response.data;
     }
-  } catch (error) {
+  } catch (error: AxiosError | any) {
     return false;
   }
   return null;
@@ -56,35 +60,55 @@ const DevicesProvider = ({ children }: { children: ReactNode }) => {
 
   const discoverIp = async () => {
     const localIp = await Network.getIpAddressAsync();
+
     setIp(localIp);
   };
 
   const discoverDevices = useCallback(async () => {
     setScanning(true);
-    const localIp = await Network.getIpAddressAsync();
-    const ipPrefix = localIp.substring(0, localIp.lastIndexOf(".") + 1);
+    setError("");
+    console.log("Discovering devices on network", ip);
 
+    const ipPrefix = ip.substring(0, ip.lastIndexOf(".") + 1);
     const devicePromises = [];
     for (let i = 0; i <= 255; i++) {
       const ip = `${ipPrefix}${i}`;
       devicePromises.push(pingDevice(ip));
     }
+    const remainingResults = await Promise.all(devicePromises);
+    const deviceResults = [...remainingResults];
 
-    const deviceResults = await Promise.all(devicePromises);
     const discoveredDevices = deviceResults.filter(
       (device) => device !== null && device
     );
-    setDevices(discoveredDevices);
+    console.log("Discovered devices:", discoveredDevices);
+
+    if (discoveredDevices.length === 0) {
+      setError("No devices found");
+    }
+
+    setDevices(() => discoveredDevices);
     setScanning(false);
-  }, []);
+  }, [ip, scanning]);
 
   useEffect(() => {
-    discoverIp();
-    discoverDevices();
-    if (scanning || connecting) return;
-    const interval = setInterval(discoverDevices, 7000);
+    if (ip !== "" || ip !== null || ip !== "0.0.0.0") {
+      discoverDevices();
+    }
+  }, [ip]);
+
+  useEffect(() => {
+    if (ip === "" || ip === null || ip === "0.0.0.0") {
+      discoverIp();
+    }
+    if (scanning || connecting || selectedDevice) {
+      return;
+    }
+    const interval = setInterval(() => {
+      discoverDevices();
+    }, 6000);
     return () => clearInterval(interval);
-  }, [discoverDevices, selectedDevice, scanning, connecting]);
+  }, [discoverDevices, selectedDevice, scanning, connecting, ip, devices]);
 
   const getSelectedDevice = useCallback(
     async (link = false) => {
@@ -113,7 +137,7 @@ const DevicesProvider = ({ children }: { children: ReactNode }) => {
   const discoverDeviceById = useCallback(
     async (id: string) => {
       const device = devices.find((device) => device.id === id);
-      console.log("looking for device: ", device);
+      console.log("looking for device with id :", id);
       if (device) {
         setSelectedDevice(device);
         await connect(device);
@@ -133,10 +157,11 @@ const DevicesProvider = ({ children }: { children: ReactNode }) => {
         if (response) {
           setConnected(true);
           return true;
+        } else {
+          discoverDevices();
+          discoverDeviceById(device.id);
         }
-        discoverDeviceById(device.id);
         setConnected(false);
-        setError("Failed to connect device");
       } catch (error) {
         setConnected(false);
         setError("Failed to connect device");
@@ -153,7 +178,7 @@ const DevicesProvider = ({ children }: { children: ReactNode }) => {
     router.replace("/connecting");
     try {
       if (!device.ip) throw new Error("No IP address");
-      const response = await axios.get(`http://${device.ip}/details`);
+      const response = await axios.get(`http://${device.ip}:4000/details`);
       if (response.status === 200 && response.data) {
         const result = await devicesActions.addDevice(device);
         const result2 = await selectedDeviceActions.setSelectedDevice(device);
@@ -179,14 +204,6 @@ const DevicesProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  // useEffect(() => {
-  //   if (selectedDevice || !connecting) {
-  //     const interval = setInterval(() => {
-  //       connect(selectedDevice);
-  //     }, 6000);
-  //     return () => clearInterval(interval);
-  //   }
-  // }, [selectedDevice, connect, connecting]);
   function debounce(func: any, wait: number) {
     let timeout: any;
     return function (...args: any) {
@@ -205,7 +222,7 @@ const DevicesProvider = ({ children }: { children: ReactNode }) => {
     try {
       console.log("changing state: ", newState);
       const response = await axios.post(
-        `http://${selectedDevice.ip}/setCoolerState`,
+        `http://${selectedDevice.ip}:4000/setCoolerState`,
         newState,
         {
           timeout: 2500,
@@ -226,15 +243,25 @@ const DevicesProvider = ({ children }: { children: ReactNode }) => {
       setConnected(false);
     }
   };
-  const debouncedChangeState = useCallback(debounce(changeState, 300), [
+  const debouncedChangeState = useCallback(debounce(changeState, 100), [
     selectedDevice,
   ]);
+
+  const removeDevice = async (id: string) => {
+    const result = await devicesActions.removeDevice(id);
+    if (result.status && !result.dbError) {
+      setSelectedDevice(null);
+      setConnected(false);
+      router.replace("/");
+    }
+  };
 
   return (
     <DeviceContext.Provider
       value={{
         devices,
         ip,
+        error,
         scanning,
         discoverDevices,
         connectDevice,
@@ -245,6 +272,7 @@ const DevicesProvider = ({ children }: { children: ReactNode }) => {
         isConnected,
         state,
         changeState: debouncedChangeState,
+        removeDevice,
       }}
     >
       {children}

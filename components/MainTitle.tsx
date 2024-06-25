@@ -20,6 +20,5 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: useResponsiveFontSize(20),
-    lineHeight: 80,
   },
 });

@@ -32,10 +32,10 @@ const useDatabase = ({ children }) => {
     }
   };
   const initDb = async () => {
-    if ((await getData("devices")).dbError) {
+    if ((await getData("devices"))?.dbError) {
       await storeData("devices", []);
     }
-    if ((await getData("selectedDevice")).dbError) {
+    if ((await getData("selectedDevice"))?.dbError) {
       await storeData("selectedDevice", null);
     }
   };
@@ -45,17 +45,16 @@ const useDatabase = ({ children }) => {
   }, []);
 
   const resetStorage = async () => {
-    return await storage.clearMap();
+    return await storage?.clearMap();
   };
 
   const addDevice = async (device) => {
-    if (device.id) {
+    if (device?.id) {
       const devices = await getData("devices");
-      if (devices.dbError) {
-        console.log(devices.dbError);
+      if (devices?.dbError) {
         return { dbError: true, msg: "failed to add the data" };
       } else {
-        const newDevices = devices.some((d) => d.id === device.id)
+        const newDevices = devices.some((d) => d?.id === device?.id)
           ? devices.map((d) => (d.id === device.id ? device : d))
           : [...devices, device];
         await storeData("devices", newDevices);
@@ -66,10 +65,11 @@ const useDatabase = ({ children }) => {
 
   const removeDevice = async (device) => {
     const devices = await getData("devices");
-    if (devices.dbError) {
+    if (devices?.dbError) {
       return { dbError: true, msg: "failed to get the data" };
     } else {
-      const newDevices = devices.filter((d) => d.id !== device.id);
+      const newDevices = devices.filter((d) => d?.id !== device?.id);
+      await removeSelectedDevice()
       return await storeData("devices", newDevices);
     }
   };
@@ -106,7 +106,7 @@ const useDatabase = ({ children }) => {
   const setSelectedDevice = async (device) => {
     await storeData("selectedDevice", device);
     const data = await getData("selectedDevice");
-    if (data.dbError) return { status: true, data: data };
+    if (data?.dbError) return { status: true, data: data };
     else return { ...data };
   };
 
@@ -116,7 +116,7 @@ const useDatabase = ({ children }) => {
 
   const getSelectedDevice = async () => {
     const data = await getData("selectedDevice");
-    if (data.dbError) return { status: false, ...data };
+    if (data?.dbError) return { status: false, ...data };
     return {
       status: true,
       data: data,
