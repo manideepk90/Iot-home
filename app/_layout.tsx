@@ -50,12 +50,12 @@ export default function RootLayout() {
                 headerShown: false,
               }}
             />
-            {/* <Stack.Screen
+            <Stack.Screen
               name="(home)/deviceDetails"
               options={{
                 headerShown: false,
               }}
-            /> */}
+            />
           </Stack>
         </DevicesProvider>
       </DatabaseProvider>

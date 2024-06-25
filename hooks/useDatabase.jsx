@@ -69,6 +69,7 @@ const useDatabase = ({ children }) => {
       return { dbError: true, msg: "failed to get the data" };
     } else {
       const newDevices = devices.filter((d) => d?.id !== device?.id);
+      await removeSelectedDevice()
       return await storeData("devices", newDevices);
     }
   };
