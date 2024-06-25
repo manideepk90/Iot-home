@@ -108,7 +108,7 @@ const deviceDetails = () => {
       </View>
       <TouchableOpacity
         style={styles.removeButton}
-        onPress={() => removeDevice()}
+        onPress={() => removeDevice(device)}
       >
         <Text style={styles.removeText}>Remove Device</Text>
       </TouchableOpacity>
