@@ -10,6 +10,7 @@ import axios, { AxiosError } from "axios";
 import * as Network from "expo-network";
 import { DatabaseContext } from "./useDatabase";
 import { router } from "expo-router";
+import { ToastAndroid } from "react-native";
 
 export const DeviceContext = createContext({
   devices: [],
@@ -31,7 +32,6 @@ const pingDevice = async (ip: string) => {
     const response = await axios.get(`http://${ip}:4000/details`, {
       timeout: 1000,
     });
-    console.log(response);
     if (response.status === 200) {
       return response.data;
     }
@@ -68,7 +68,6 @@ const DevicesProvider = ({ children }: { children: ReactNode }) => {
     setScanning(true);
     setError("");
     console.log("Discovering devices on network", ip);
-
     const ipPrefix = ip.substring(0, ip.lastIndexOf(".") + 1);
     const devicePromises = [];
     for (let i = 0; i <= 255; i++) {
@@ -81,12 +80,9 @@ const DevicesProvider = ({ children }: { children: ReactNode }) => {
     const discoveredDevices = deviceResults.filter(
       (device) => device !== null && device
     );
-    console.log("Discovered devices:", discoveredDevices);
-
     if (discoveredDevices.length === 0) {
-      setError("No devices found");
+      ToastAndroid.show("No devices found", ToastAndroid.SHORT);
     }
-
     setDevices(() => discoveredDevices);
     setScanning(false);
   }, [ip, scanning]);
@@ -149,13 +145,25 @@ const DevicesProvider = ({ children }: { children: ReactNode }) => {
   const connect = useCallback(
     async (device: any) => {
       if (!device.ip) {
+        console.log("No IP address found for device");
         return false;
       }
+      ToastAndroid.show("Connecting Device...", ToastAndroid.SHORT);
       setConnecting(true);
       try {
         const response = await pingDevice(device.ip);
         if (response) {
           setConnected(true);
+          ToastAndroid.show("Connected to device", ToastAndroid.SHORT);
+          try {
+            const response2 = await axios.get(
+              `http://${device.ip}:4000/status`
+            );
+            if (response2.status === 200 && response2.data) {
+              setState(response2.data);
+              ToastAndroid.show("States Updated", ToastAndroid.SHORT);
+            }
+          } catch (error) {}
           return true;
         } else {
           discoverDevices();
@@ -165,6 +173,7 @@ const DevicesProvider = ({ children }: { children: ReactNode }) => {
       } catch (error) {
         setConnected(false);
         setError("Failed to connect device");
+        ToastAndroid.show("Failed to connect device", ToastAndroid.SHORT);
       } finally {
         setConnecting(false);
       }
@@ -190,6 +199,7 @@ const DevicesProvider = ({ children }: { children: ReactNode }) => {
         ) {
           setConnecting(false);
           setConnected(true);
+          setSelectedDevice(device);
           router.replace("/home");
           return;
         }
