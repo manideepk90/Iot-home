@@ -65,12 +65,14 @@ const useDatabase = ({ children }) => {
 
   const removeDevice = async (device) => {
     const devices = await getData("devices");
+    console.log("devices " ,devices);
     if (devices?.dbError) {
       return { dbError: true, msg: "failed to get the data" };
     } else {
       const newDevices = devices.filter((d) => d?.id !== device?.id);
       await removeSelectedDevice()
-      return await storeData("devices", newDevices);
+      await storeData("devices", newDevices);
+      return { status: true, data: await getData("devices") };      
     }
   };
 
@@ -106,8 +108,8 @@ const useDatabase = ({ children }) => {
   const setSelectedDevice = async (device) => {
     await storeData("selectedDevice", device);
     const data = await getData("selectedDevice");
-    if (data?.dbError) return { status: true, data: data };
-    else return { ...data };
+    if (data?.dbError) return { status: false, dbError: true, msg: "failed to set the data"};
+    else return {status : true, ...data };
   };
 
   const updateSelectedDevice = async (device) => {
@@ -116,7 +118,7 @@ const useDatabase = ({ children }) => {
 
   const getSelectedDevice = async () => {
     const data = await getData("selectedDevice");
-    if (data?.dbError) return { status: false, ...data };
+    if (data?.dbError) return { status: false,  data : data };
     return {
       status: true,
       data: data,
