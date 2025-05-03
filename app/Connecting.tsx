@@ -1,11 +1,8 @@
-import { StyleSheet, Text, View } from "react-native";
 import React from "react";
 import ConnectingScreen from "@/components/ConnectingScreen";
 
-const connecting = () => {
+const Connecting = () => {
   return <ConnectingScreen />;
 };
 
-export default connecting;
-
-const styles = StyleSheet.create({});
+export default Connecting;
