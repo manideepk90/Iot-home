@@ -1,0 +1,36 @@
+# Initial App Creation Prompts
+
+1. "lets create this expo app, lets start with the index page where it has to show the searching page at launch if no device is connected previously"
+
+2. "remove search bar and make a scanning theme, where it has to scan the devices using WIFI. get the wifi ip address and list all the available devices on the same wifi. The animation of scaning should be like rader in the bottom where deveice is available it has to show icon with small device name in the bottonm"
+
+3. "can you use expo modules as im using expo app"
+
+4. "now lets create nice ui and Ux for this app. where the details should be on the top and center, and i need some settings page, where i can give nickname and delete device and add some other information to this IOT based device"
+
+5. "lets a navbar where it has list of stored devices and it has new beautiful UI in the sidebar where i can select device and it has to have another option add device. it has to navigate to main index page. but update the logic in index page. as it will automatically go to connected page based on the stored list"
+
+6. "update this sidebar, where it will just open from left to right on the button click and i can use any button and pass the open state"
+
+7. "the sidebar is not visible"
+
+8. "give me the prompt used to generate this output in seperate new txt file and give all prompts you used to generate output"
+
+# Key Features Implemented:
+1. Device scanning with radar animation
+2. Device storage and management
+3. Settings page with device customization
+4. Sidebar navigation with device list
+5. Animated sidebar with backdrop
+6. Context-based state management
+7. WiFi device discovery
+8. Device connection status monitoring
+
+# Technical Components:
+1. Expo Router for navigation
+2. AsyncStorage for device persistence
+3. React Context for state management
+4. Animated API for transitions
+5. Expo Network for WiFi functionality
+6. React Native components for UI
+7. TypeScript for type safety 
