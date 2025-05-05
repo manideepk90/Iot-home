@@ -1,4 +1,8 @@
-# Smart Cooler Control App V 1.0
+# Pixel v2.0.0 (before Smart cooler v1)
+
+  * Smart Cooler
+  * Smart Display
+    
 ## Overview
 This React Native application allows users to remotely control and monitor a smart cooler over a local Wi-Fi network. The app interfaces with a NodeMCU microcontroller, which manages the cooler's operations using relay modules and sensors. This project showcases IoT integration with mobile applications, providing a seamless and user-friendly experience.
 
